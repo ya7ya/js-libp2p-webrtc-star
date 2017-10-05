@@ -78,13 +78,16 @@ module.exports = (http) => {
   function forwardHandshake (offer) {
     if (offer == null || typeof offer !== 'object' || !offer.srcMultiaddr || !offer.dstMultiaddr) { return }
     if (offer.answer) {
-      safeEmit(offer.srcMultiaddr, 'ws-handshake', offer)
+      log('forwarding Answer to ', offer.fromId)
+      safeEmit(offer.fromId, 'ws-handshake', offer)
     } else {
-      if (peers[offer.dstMultiaddr]) {
-        safeEmit(offer.dstMultiaddr, 'ws-handshake', offer)
+      if (peers[offer.toId]) {
+        log('forwarding offer to ', offer.toId)
+        safeEmit(offer.toId, 'ws-handshake', offer)
       } else {
+        log('peer is not available ', offer.toId)
         offer.err = 'peer is not available'
-        safeEmit(offer.srcMultiaddr, 'ws-handshake', offer)
+        safeEmit(offer.toId, 'ws-handshake', offer)
       }
     }
   }
