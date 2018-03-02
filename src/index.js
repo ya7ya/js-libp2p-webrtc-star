@@ -17,6 +17,8 @@ const webrtcSupport = require('webrtcsupport')
 const utils = require('./utils')
 const cleanUrlSIO = utils.cleanUrlSIO
 const cleanMultiaddr = utils.cleanMultiaddr
+const pull = require('pull-stream/pull')
+const pullBlock = require('pull-block')
 
 const noop = once(() => {})
 
@@ -68,7 +70,12 @@ class WebRTCStar {
 
     const channel = new SimplePeer(spOptions)
 
-    const conn = new Connection(toPull.duplex(channel))
+    // const conn = new Connection(toPull.duplex(channel))
+    const conn = new Connection(pull(
+      toPull.source(channel),
+      pullBlock({size: 32 * 1024, zeroPadding: false}),
+      toPull.sink(channel)
+    ))
     let connected = false
 
     channel.on('signal', (signal) => {
@@ -168,8 +175,12 @@ class WebRTCStar {
 
         const channel = new SimplePeer(spOptions)
 
-        const conn = new Connection(toPull.duplex(channel))
-
+        const conn = new Connection(pull(
+          toPull.source(channel),
+          pullBlock({size: 32 * 1024, zeroPadding: false}),
+          toPull.sink(channel)
+        ))
+        // const conn = new Connection(toPull.duplex(channel))
         channel.once('connect', () => {
           conn.getObservedAddrs = (callback) => {
             return callback(null, [offer.srcMultiaddr])
