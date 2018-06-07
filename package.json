@@ -58,7 +58,6 @@
   },
   "dependencies": {
     "async": "^2.6.0",
-    "block-stream": "0.0.9",
     "class-is": "^1.1.0",
     "debug": "^3.1.0",
     "detect-node": "^2.0.3",
@@ -73,7 +72,6 @@
     "peer-id": "~0.10.7",
     "peer-info": "~0.14.1",
     "pull-stream": "^3.6.8",
-    "pump": "^3.0.0",
     "simple-peer": "^9.1.1",
     "socket.io": "^2.1.0",
     "socket.io-client": "^2.1.0",
